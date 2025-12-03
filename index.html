@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Surpresa para Você</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #ffe6f0, #fff);
+      color: #333;
+      text-align: center;
+      overflow-x: hidden;
+    }
+    .container { padding: 40px; }
+    h1 { font-size: 2.5em; color: #d6336c; }
+    button {
+      padding: 12px 24px;
+      font-size: 1.2em;
+      background-color: #d6336c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+      animation: pulse 1.5s infinite;
+      margin: 10px;
+    }
+    button:hover { background-color: #b02556; }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+    #video-section, #password-section, #secret-section { display: none; margin-top: 30px; }
+    input[type="password"] {
+      padding: 10px; font-size: 1em;
+      border-radius: 6px; border: 1px solid #ccc;
+    }
+    .counter { margin-top: 20px; font-size: 1.2em; color: #555; }
+    img.top-photo {
+      width: 100%; max-width: 400px;
+      border-radius: 16px; box-shadow: 0 0 12px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+    }
+    .poetic-text { font-size: 1.2em; font-style: italic; color: #d6336c; margin-bottom: 30px; }
+    .birthday-title { font-size: 2.2em; color: #d6336c; margin-bottom: 20px; }
+    .balloon, .heart {
+      position: fixed; bottom: -100px;
+      animation: floatUp 8s ease-in forwards;
+    }
+    .balloon { font-size: 2.5em; }
+    .heart { font-size: 2em; color: #d6336c; }
+    @keyframes floatUp {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-120vh); opacity: 0; }
+    }
+    /* Mensagem secreta animada */
+    #love-message {
+      overflow: hidden; white-space: pre-wrap;
+      border-right: 2px solid #d6336c;
+      animation: typing 10s steps(60, end), blink 0.8s infinite;
+    }
+    @keyframes typing { from { width: 0 } to { width: 100% } }
+    @keyframes blink { 50% { border-color: transparent } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="foto.jpeg" alt="Nós dois" class="top-photo" />
+    <p class="poetic-text">Cada batida dessa música carrega um pedaço de você... 💖</p>
+    <h1>Uma Surpresa Especial 💌</h1>
+    <button onclick="startSurprise()">Dar play no nosso momento 🎬</button>
+
+    <div id="video-section">
+      <h2>Assista com carinho 💖</h2>
+      <iframe width="100%" height="400" src="https://www.youtube.com/embed/U2QSZs8T8YY" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <div id="password-section">
+      <h2>Digite a senha para ver a mensagem secreta 🔐</h2>
+      <input type="password" id="password" placeholder="Digite a senha..." />
+      <button onclick="checkPassword()">Ver mensagem</button>
+    </div>
+
+    <div id="secret-section">
+      <h2 class="birthday-title">🎉 Feliz Aniversário, meu amor! 🎂🎈</h2>
+      <p id="love-message">
+        Meu amor, hoje é um dia especial porque celebramos você... 💖
+      </p>
+      <div class="counter" id="counter"></div>
+    </div>
+  </div>
+
+  <!-- Som ambiente -->
+  <audio id="bg-music" loop>
+    <source src="musica.mp3" type="audio/mpeg">
+  </audio>
+  <button onclick="toggleMusic()">🎵 Música de Fundo</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    const PASSWORD = "050823";
+    let musicPlaying = false;
+
+    function startSurprise() {
+      document.querySelector("button").style.display = "none";
+      document.getElementById("video-section").style.display = "block";
+      document.getElementById("password-section").style.display = "block";
+      startCounter(new Date("2023-08-05T00:00:00"));
+      launchHearts();
+      playMusic();
+    }
+
+    function checkPassword() {
+      const input = document.getElementById("password").value;
+      if (input === PASSWORD) {
+        document.getElementById("secret-section").style.display = "block";
+        launchConfetti();
+        launchBalloons();
+      } else {
+        alert("Senha incorreta! Tente novamente.");
+      }
+    }
+
+    function startCounter(startDate) {
+      const counter = document.getElementById("counter");
+      setInterval(() => {
+        const now = new Date();
+        const diff = now - startDate;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+        counter.textContent = Estamos juntos há ${days} dias, ${hours}h ${minutes}min ${seconds}s 💞;
+      }, 1000);
+    }
+
+    function launchConfetti() {
+      const duration = 5 * 1000;
+      const end = Date.now() + duration;
+      (function frame() {
+        confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
+        confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      }());
+    }
+
+    function launchBalloons() {
+      const emojis = ["🎈","🎉","💖","✨"];
+      for (let i = 0; i < 10; i++) {
+        const balloon = document.createElement("div");
+        balloon.className = "balloon";
+        balloon.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        balloon.style.left = Math.random() * 100 + "vw";
+        document.body.appendChild(balloon);
+        setTimeout(() => balloon.remove(), 8000);
+      }
+    }
+
+    function launchHearts() {
+      for (let i = 0; i < 15; i++) {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.textContent = "💖";
+        heart.style.left = Math.random() * 100 + "vw";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 6000);
+      }
+    }
+
+    function playMusic() {
+      const music = document.getElementById("bg-music");
+      music.play();
+      musicPlaying = true;
+    }
+
+    function toggleMusic() {
+      const music = document.getElementById("bg-music");
+      if (musicPlaying) {
+        music.pause();
+        musicPlaying = false;
+      } else {
+        music.play();
+        musicPlaying = true;
+      }
+    }
+  </script>
+</body>
+</html>
